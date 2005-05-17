@@ -1,0 +1,61 @@
+NAME
+    File::HomeDir::Win32 - Find home directories on Win32 systems
+
+REQUIREMENTS
+    This package requires Perl 5.6.0 and following modules (most of which
+    are not included with Perl):
+
+      Win32::Security::SID
+      Win32::TieRegistry
+
+INSTALLATION
+    Installation can be done using the traditional Makefile.PL or the newer
+    Build.PL methods.
+
+    Using Makefile.PL:
+
+      perl Makefile.PL
+      make test
+      make install
+
+    (On Windows platforms you should use `nmake' instead.)
+
+    Using Build.PL on systems with Module::Build installed:
+
+      perl Build.PL
+      perl Build test
+      perl Build install
+
+SYNOPSIS
+      use File::HomeDir::Win32;
+
+      print "My dir is ",home()," and root's is ",home('Administrator'),"\n";
+
+DESCRIPTION
+    This module provides routines for finding home directories on Win32
+    systems. It was designed as a companion to File::HomeDir that overrides
+    the existing `home' function, which does not properly locate home
+    directories on Windows machines.
+
+    See the module documentation for more details.
+
+CAVEATS
+    This module will not work on Windows 95/98/ME systems with no user
+    profiles enabled.
+
+SEE ALSO
+      File::HomeDir
+
+AUTHOR
+    Robert Rothenberg <rrwo at cpan.org>
+
+  Suggestions and Bug Reporting
+
+    Feedback is always welcome. Please use the CPAN Request Tracker at
+    http://rt.cpan.org to submit bug reports.
+
+LICENSE
+    Copyright (c) 2005 Robert Rothenberg. All rights reserved. This program
+    is free software; you can redistribute it and/or modify it under the
+    same terms as Perl itself.
+
