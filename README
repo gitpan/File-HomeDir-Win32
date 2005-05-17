@@ -39,6 +39,18 @@ DESCRIPTION
 
     See the module documentation for more details.
 
+REVISION HISTORY
+    The following changes have been made since the last release:
+
+    0.02  Tue May 17 2005
+            - fixed bug with not updating the main::File::HomeDir::home
+              subdirectory when used from outside main space
+            - uses Test::Warn to check for warning
+            - fixed redefined warning when used from outside main space
+            - updated docs
+
+    See the Changes file for a detailed history.
+
 CAVEATS
     This module will not work on Windows 95/98/ME systems with no user
     profiles enabled.

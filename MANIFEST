@@ -6,5 +6,7 @@ META.yml
 README
 t/01-basic.t
 t/01-dynamic.t
+t/01-if.t
+t/01-warning.t
 lib/File/HomeDir/Win32.pm
 SIGNATURE    Added here by Module::Build

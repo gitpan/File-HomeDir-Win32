@@ -12,14 +12,13 @@ use Win32::TieRegistry ( TiedHash => \%Registry );
 
 require Exporter;
 
-use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-@ISA = qw(Exporter);
+our @ISA = qw(Exporter);
 
-%EXPORT_TAGS = ( 'all' => [ qw( home ) ] );
-@EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-@EXPORT = qw( home );
+our %EXPORT_TAGS = ( 'all' => [ qw( home ) ] );
+our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
+our @EXPORT = qw( home );
 
-$VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub import {
   no strict 'refs';
@@ -27,14 +26,25 @@ sub import {
   my $caller = caller(0);
   my $stash  = *{$caller."::"};
 
-  if ( (defined &{$stash->{home}}) &&
-       (defined &{$stash->{"File::"}->{"HomeDir::"}->{home}}) ) {
+  # print STDERR "caller = $caller\n";
+
+  if ( (defined &{$stash->{home}})) {
     if (@_ > 1) {
       carp "Exporter arguments ignored";
     }
     no warnings 'redefine';
-    $stash->{"File::"}->{"HomeDir::"}->{home} = \&home;
+
+    $stash->{"File::"}->{"HomeDir::"}->{home} = \&home,
+      if (defined &{$stash->{"File::"}->{"HomeDir::"}->{home}});
+
     $stash->{home} = \&home;
+
+    unless ($caller eq "main") {
+      $stash = *{"main::"};
+      $stash->{"File::"}->{"HomeDir::"}->{home} = \&home,
+	if (defined &{$stash->{"File::"}->{"HomeDir::"}->{home}});
+    }
+
     return;
   }
   goto &Exporter::import;
@@ -157,11 +167,24 @@ To use both modules together:
     }
   }
 
+or (if you have the L<if> module),
+
+  use File::HomeDir;
+  use if ($^O eq "MSWin32"), "File::HomeDir::Win32";
+
 The C<home> function should work as normal.
 
 =begin readme
 
 See the module documentation for more details.
+
+=head1 REVISION HISTORY
+
+The following changes have been made since the last release:
+
+=for readme include file="Changes" start="^0.02" stop="^0.01" type="text"
+
+See the F<Changes> file for a detailed history.
 
 =end readme
 

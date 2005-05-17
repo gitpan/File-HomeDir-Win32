@@ -6,7 +6,9 @@ WriteMakefile
           'VERSION_FROM' => 'lib/File/HomeDir/Win32.pm',
           'PREREQ_PM' => {
                            'Carp' => '0',
+                           'File::HomeDir' => '0.06',
                            'Test::More' => '0',
+                           'Test::Warn' => '0',
                            'Win32' => '0',
                            'Win32::Security::SID' => '0',
                            'Win32::TieRegistry' => '0'
