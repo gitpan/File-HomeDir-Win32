@@ -18,6 +18,7 @@ my $build = Module::Build->new
        'Win32::TieRegistry'   => 0,
      },
      recommends => {
+       'Pod::Readme'    => 0.03, # for building dist
      },
      build_requires => {
        'Test::More'     => 0,

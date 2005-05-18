@@ -4,12 +4,12 @@ use strict;
 
 use Test::More;
 
-plan skip_all => "for internal use";
+plan skip_all => "Need Perl 5.7.3 or greater" if ($] < 5.007003);
 
-# use File::HomeDir;
-# use if ($^O eq "MSWin32"), "File::HomeDir::Win32";
+plan tests => 7;
 
-plan tests => 5;
+use_ok("File::HomeDir");
+use_ok("if", ($^O eq "MSWin32"), "File::HomeDir::Win32");
 
 ok( defined home(), "home defined");
 ok( home() eq home($ENV{USERNAME}), "home = home(username)");

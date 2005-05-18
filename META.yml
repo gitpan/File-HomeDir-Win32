@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: File-HomeDir-Win32
-version: 0.02
+version: 0.03
 author:
   - Robert Rothenberg <rrwo at cpan.org>
 abstract: Find home directories on Win32 systems
@@ -12,11 +12,13 @@ requires:
   Win32::Security::SID: 0
   Win32::TieRegistry: 0
   perl: 5.6.0
+recommends:
+  Pod::Readme: 0.03
 build_requires:
   Test::More: 0
   Test::Warn: 0
 provides:
   File::HomeDir::Win32:
     file: lib/File/HomeDir/Win32.pm
-    version: 0.02
+    version: 0.03
 generated_by: Module::Build version 0.261

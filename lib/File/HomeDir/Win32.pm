@@ -2,6 +2,7 @@ package File::HomeDir::Win32;
 
 use 5.006;
 use strict;
+use warnings;
 
 my %Registry;
 
@@ -18,7 +19,9 @@ our %EXPORT_TAGS = ( 'all' => [ qw( home ) ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw( home );
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
+
+my %HomeDirs;
 
 sub import {
   no strict 'refs';
@@ -26,31 +29,52 @@ sub import {
   my $caller = caller(0);
   my $stash  = *{$caller."::"};
 
+  sub _set_stash {
+    my $value  = shift;
+    my $caller = shift;
+    my $stash  = *{$caller."::"};
+
+    my @names  = split /::/, shift;
+
+    # print STDERR join(" ", @names), "\n";
+
+    while (my $level = shift @names) {
+      $level .= "::",
+	if (@names);
+      return,
+	unless (defined $stash->{$level});
+      if (@names) {
+	$stash = $stash->{$level};
+      } else {
+	no warnings 'redefine';
+	$stash->{$level} = $value,
+	  if ((defined &{$stash->{$level}}) && ((ref $value) eq "CODE"));
+      }
+    }
+  }
+
   # print STDERR "caller = $caller\n";
 
-  if ( (defined &{$stash->{home}})) {
+  _find_homedirs(), unless (keys %HomeDirs);
+  if ((keys %HomeDirs) & (defined &{$stash->{home}})) {
     if (@_ > 1) {
       carp "Exporter arguments ignored";
     }
-    no warnings 'redefine';
 
-    $stash->{"File::"}->{"HomeDir::"}->{home} = \&home,
-      if (defined &{$stash->{"File::"}->{"HomeDir::"}->{home}});
+    _set_stash(\&home, $caller, "home");
 
-    $stash->{home} = \&home;
-
-    unless ($caller eq "main") {
-      $stash = *{"main::"};
-      $stash->{"File::"}->{"HomeDir::"}->{home} = \&home,
-	if (defined &{$stash->{"File::"}->{"HomeDir::"}->{home}});
-    }
+    _set_stash(\&home, $caller, "File::HomeDir::home");
+    _set_stash(\&home, "main", "File::HomeDir::home"),
+      if ($caller ne "main");
 
     return;
   }
-  goto &Exporter::import;
+  else {
+    croak "Fatal error: cannot find profiles in Windows registry"
+      unless (keys %HomeDirs);
+    goto &Exporter::import;
+  }
 }
-
-my %HomeDirs;
 
 sub _find_homedirs {
   %HomeDirs    = ( );
@@ -62,7 +86,7 @@ sub _find_homedirs {
     $profiles = $Registry{'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ProfileList\\'};  
   }
   unless ($profiles) {
-    croak "Fatal error: cannot find profiles in Windows registry";
+    return;
   }
 
   foreach my $p (keys %$profiles) {
@@ -174,6 +198,10 @@ or (if you have the L<if> module),
 
 The C<home> function should work as normal.
 
+On systems with no profiles, such as Windows 98, or in cases where it
+cannot find profiles, it will not override L<File::HomeDir>. (In such
+cases it will die if L<File::HomeDir> is not loaded.)
+
 =begin readme
 
 See the module documentation for more details.
@@ -182,18 +210,13 @@ See the module documentation for more details.
 
 The following changes have been made since the last release:
 
-=for readme include file="Changes" start="^0.02" stop="^0.01" type="text"
+=for readme include file="Changes" start="^0.03" stop="^0.02" type="text"
 
 See the F<Changes> file for a detailed history.
 
 =end readme
 
 =for readme continue
-
-=head1 CAVEATS
-
-This module will not work on Windows 95/98/ME systems with no user
-profiles enabled.
 
 =head1 SEE ALSO
 
