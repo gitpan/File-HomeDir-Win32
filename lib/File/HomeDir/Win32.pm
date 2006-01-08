@@ -19,7 +19,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw( home ) ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw( home );
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 my %HomeDirs;
 
@@ -56,7 +56,7 @@ sub import {
   # print STDERR "caller = $caller\n";
 
   _find_homedirs(), unless (keys %HomeDirs);
-  if ((keys %HomeDirs) & (defined &{$stash->{home}})) {
+  if ((keys %HomeDirs) && (defined &{$stash->{home}})) {
     if (@_ > 1) {
       carp "Exporter arguments ignored";
     }
@@ -79,7 +79,9 @@ sub import {
 sub _find_homedirs {
   %HomeDirs    = ( );
 
-  my $node     = Win32::NodeName;
+  my $node_name   = Win32::NodeName;
+  my $domain_name = Win32::DomainName;
+
   my $profiles = $Registry{'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList\\'};
   unless ($profiles) {
     # Windows 98
@@ -99,13 +101,13 @@ sub _find_homedirs {
 	$domain = $1;
 	$uid    = $2;
       }
-      if ($domain eq $node) {
+      if ($domain eq $node_name || $domain eq $domain_name) {
 	my $path = $profiles->{$p}->{ProfileImagePath};
 	$path =~ s/\%(.+)\%/$ENV{$1}/eg;
 	$HomeDirs{$uid} = $path;
       }
     }
-  }  
+  }
 }
 
 sub home(;$) {
@@ -225,6 +227,8 @@ See the F<Changes> file for a detailed history.
 =head1 AUTHOR
 
 Robert Rothenberg <rrwo at cpan.org>
+
+Current maintainer: Randy Kobes <r.kobes at uwinnipeg.ca>
 
 =head2 Suggestions and Bug Reporting
 

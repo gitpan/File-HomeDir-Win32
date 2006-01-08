@@ -25,12 +25,12 @@ BEGIN {
 }
 
 ok( defined home(), "home defined");
-ok( home() eq home($ENV{USERNAME}), "home = home(username)");
+is( home(), home($ENV{USERNAME}), "home = home(username)");
 ok( -d home(), "home exists");
 
 {
-  ok( $~{''} eq home(), "\$~{} = home(username)");
-  ok( $~{$ENV{USERNAME}} eq home(), "\$~{} = home(username)");
+  is( $~{''}, home(), "\$~{} = home(username)");
+  is( $~{$ENV{USERNAME}}, home(), "\$~{} = home(username)");
 }
 
 

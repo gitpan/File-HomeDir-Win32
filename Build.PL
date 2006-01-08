@@ -26,7 +26,7 @@ my $build = Module::Build->new
      },
      create_readme      => 0,
      create_makefile_pl => 'traditional',
-     dist_author        => 'Robert Rothenberg <rrwo at cpan.org>',
+     dist_author        => 'Ramdy Kobes <r.kobes at uwinnipeg.ca>',
      sign               => 1,
 );
 

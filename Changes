@@ -1,5 +1,9 @@
 Revision history for Perl extension File::HomeDir::Win32.
 
+0.04  Wed Dec 28 2005
+        - implement bug fixes supplied in 
+          https://rt.cpan.org/NoAuth/Bug.html?id=15501
+
 0.03  Wed May 18 2005
 	- added tests
 	- when no profiles can be found, it will not override File::HomeDir
